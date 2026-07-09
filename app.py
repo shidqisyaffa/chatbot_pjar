@@ -12,7 +12,7 @@ st.set_page_config(
 import config
 import database
 import models
-from utils.helpers import get_uptime_string, get_client_info
+from utils.helpers import get_uptime_string, get_client_info, to_wib
 from services import history_service, logging_service, chat_service
 from services.llm_service import check_llm_status
 from services.prompts import SUGGESTED_QUESTIONS, REJECTION_MESSAGE
@@ -165,7 +165,7 @@ else:
     # Format labels for session select dropdown
     session_options = []
     for s in sessions:
-        lbl = f"Session {s['session_uuid'][:8]}... ({s['updated_at'].strftime('%d %b %H:%M')})"
+        lbl = f"Session {s['session_uuid'][:8]}... ({to_wib(s['updated_at']).strftime('%d %b %H:%M')})"
         session_options.append(lbl)
         
     if session_uuids:
@@ -228,7 +228,7 @@ for msg in messages:
     with st.chat_message(role, avatar=avatar):
         st.markdown(msg["message"])
         # Display timestamp
-        timestamp_str = msg["created_at"].strftime("%H:%M")
+        timestamp_str = to_wib(msg["created_at"]).strftime("%H:%M")
         st.markdown(f'<div class="timestamp-label">🕒 {timestamp_str}</div>', unsafe_allow_html=True)
 
 # Display Suggested Questions if conversation has no history

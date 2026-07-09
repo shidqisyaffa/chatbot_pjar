@@ -59,10 +59,13 @@ def get_logs_summary() -> dict:
             # Average response time
             avg_latency = session.query(func.avg(RequestLog.latency_ms)).scalar() or 0.0
             
-            # Today's chat messages count
+            # Today's chat messages count (aligned to WIB timezone / UTC+7)
             from models import ChatMessage
-            today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-            today_chats = session.query(func.count(ChatMessage.id)).filter(ChatMessage.created_at >= today_start).scalar() or 0
+            from datetime import timedelta
+            now_wib = datetime.utcnow() + timedelta(hours=7)
+            today_start_wib = now_wib.replace(hour=0, minute=0, second=0, microsecond=0)
+            today_start_utc = today_start_wib - timedelta(hours=7)
+            today_chats = session.query(func.count(ChatMessage.id)).filter(ChatMessage.created_at >= today_start_utc).scalar() or 0
             
             return {
                 "total_sessions": total_sessions,

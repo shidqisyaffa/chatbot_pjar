@@ -1,6 +1,14 @@
 import time
-from datetime import datetime
+import datetime
 import streamlit as st
+
+def to_wib(dt: datetime.datetime) -> datetime.datetime:
+    """
+    Converts a UTC naive datetime to Waktu Indonesia Barat (WIB) which is UTC+7.
+    """
+    if dt is None:
+        return None
+    return dt + datetime.timedelta(hours=7)
 
 # Store the global start time of the server process
 APP_START_TIME = time.time()
