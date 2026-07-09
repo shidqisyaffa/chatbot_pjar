@@ -33,17 +33,7 @@ else:
 # APPLICATION SESSION STATE SETUP
 # -------------------------------------------------------------
 if "session_uuid" not in st.session_state:
-    latest_uuid = None
-    if not db_error:
-        # Fetch existing sessions and pick the most recent one
-        sessions = history_service.list_sessions()
-        if sessions:
-            latest_uuid = sessions[0]["session_uuid"]
-            
-    if latest_uuid:
-        st.session_state.session_uuid = latest_uuid
-    else:
-        st.session_state.session_uuid = str(uuid.uuid4())
+    st.session_state.session_uuid = str(uuid.uuid4())
 
 if "pending_question" not in st.session_state:
     st.session_state.pending_question = None
@@ -160,39 +150,19 @@ if st.sidebar.button("➕ New Chat", use_container_width=True):
 sessions = history_service.list_sessions() if db_connected else []
 active_uuid = st.session_state.session_uuid
 
-# Get list of existing sessions with messages
-session_uuids = [s["session_uuid"] for s in sessions]
-
-# If the active session is a new blank session (0 messages), 
-# we prepend a temporary "New Chat" option so the user can remain on it.
-is_new_chat = active_uuid not in session_uuids
-
-session_options = []
-if is_new_chat:
-    session_options.append("✨ New Chat")
-    session_uuids.insert(0, active_uuid)
-
-for s in sessions:
-    lbl = f"Session {s['session_uuid'][:8]}... ({to_wib(s['updated_at']).strftime('%d %b %H:%M')})"
-    session_options.append(lbl)
-
-if session_options:
-    try:
-        active_idx = session_uuids.index(active_uuid)
-    except ValueError:
-        active_idx = 0
-        
-    selected_lbl = st.sidebar.selectbox(
-        "Select Session",
-        options=session_options,
-        index=active_idx,
-        key="sess_selector"
-    )
-    # Update active uuid if changed
-    selected_idx = session_options.index(selected_lbl)
-    if session_uuids[selected_idx] != active_uuid:
-        st.session_state.session_uuid = session_uuids[selected_idx]
-        st.rerun()
+# Render list of previous sessions (ChatGPT style)
+if not sessions:
+    st.sidebar.caption("No chat history available.")
+else:
+    for s in sessions:
+        lbl = f"💬 Session {s['session_uuid'][:8]}... ({to_wib(s['updated_at']).strftime('%H:%M')})"
+        # Highlight active session
+        if s["session_uuid"] == active_uuid:
+            lbl = f"👉 {lbl}"
+            
+        if st.sidebar.button(lbl, key=f"btn_{s['session_uuid']}", use_container_width=True):
+            st.session_state.session_uuid = s["session_uuid"]
+            st.rerun()
 
 # Deletion Controls
 col1, col2 = st.sidebar.columns(2)
