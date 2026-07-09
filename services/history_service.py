@@ -34,12 +34,17 @@ def create_session(session_uuid: str, user_agent: str = None, ip_address: str = 
 
 def list_sessions() -> list[dict]:
     """
-    Retrieves all chat sessions, ordered by updated_at descending.
+    Retrieves chat sessions that have at least one message, ordered by updated_at descending.
     Returns a list of dicts.
     """
     try:
         with get_db_session() as session:
-            sessions = session.query(ChatSession).order_by(desc(ChatSession.updated_at)).all()
+            # Perform join with ChatMessage to filter out empty sessions
+            sessions = session.query(ChatSession)\
+                .join(ChatMessage)\
+                .group_by(ChatSession.id)\
+                .order_by(desc(ChatSession.updated_at))\
+                .all()
             return [
                 {
                     "session_uuid": s.session_uuid,
