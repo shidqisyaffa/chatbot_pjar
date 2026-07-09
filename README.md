@@ -145,18 +145,26 @@ ngrok digunakan untuk mem-forward server lokal LM Studio ke internet melalui URL
    ```bash
    ngrok config add-authtoken <TOKEN_ANDA>
    ```
-3. **Membuka Tunnel**: Forward port lokal `1234` tempat LM Studio berjalan ke internet:
-   ```bash
-   ngrok http 1234
-   ```
-4. ngrok akan menampilkan informasi tunnel yang aktif. Salin alamat forwarding HTTPS yang berakhiran `.ngrok-free.app` (misalnya: `https://7fae-110-138-93-238.ngrok-free.app`).
+3. **Membuka Tunnel**:
+   Ada dua metode untuk membuka tunnel:
+   - **Metode A (Random URL - Berubah tiap restart)**:
+     ```bash
+     ngrok http 1234
+     ```
+   - **Metode B (Static Domain - Permanen Gratis)**:
+     1. Masuk ke [dashboard.ngrok.com](https://dashboard.ngrok.com/), pilih **Cloud Edge** -> **Domains**.
+     2. Klik **Create Domain** untuk mendapatkan domain permanen gratis (contoh: `my-domain.ngrok-free.app`).
+     3. Jalankan terowongan dengan perintah:
+        ```bash
+        ngrok http 1234 --url my-domain.ngrok-free.app
+        ```
 
 ### 3. Konfigurasi File `.env` lokal
 Ganti nilai konfigurasi di file `.env` proyek Anda dengan URL ngrok tersebut. Pastikan Anda menambahkan `/v1` di akhir URL.
 ```env
 DATABASE_URL=postgresql://neondb_owner:npg_CO0SejPiQ9Vt@ep-round-dust-ats816vb.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require
-LLM_BASE_URL=https://7fae-110-138-93-238.ngrok-free.app/v1
-MODEL_NAME=qwopus3.5-9b-coder
+LLM_BASE_URL=https://my-domain.ngrok-free.app/v1
+MODEL_NAME=gemma-4-e2b
 API_KEY=lm-studio
 TEMPERATURE=0.3
 MAX_TOKENS=4096
