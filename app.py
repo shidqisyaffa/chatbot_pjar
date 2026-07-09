@@ -33,7 +33,17 @@ else:
 # APPLICATION SESSION STATE SETUP
 # -------------------------------------------------------------
 if "session_uuid" not in st.session_state:
-    st.session_state.session_uuid = str(uuid.uuid4())
+    latest_uuid = None
+    if not db_error:
+        # Fetch existing sessions and pick the most recent one
+        sessions = history_service.list_sessions()
+        if sessions:
+            latest_uuid = sessions[0]["session_uuid"]
+            
+    if latest_uuid:
+        st.session_state.session_uuid = latest_uuid
+    else:
+        st.session_state.session_uuid = str(uuid.uuid4())
 
 if "pending_question" not in st.session_state:
     st.session_state.pending_question = None
