@@ -28,7 +28,12 @@ def get_env_or_secret(key: str, default: str = None) -> str:
 # App Settings
 APP_TITLE = get_env_or_secret("APP_TITLE", "Chatbot Pemrograman Jaringan")
 LOG_LEVEL = get_env_or_secret("LOG_LEVEL", "INFO")
-DEBUG = get_env_or_secret("DEBUG", "False").lower() in ("true", "1", "yes")
+
+raw_debug = get_env_or_secret("DEBUG", "False")
+if isinstance(raw_debug, bool):
+    DEBUG = raw_debug
+else:
+    DEBUG = str(raw_debug).lower() in ("true", "1", "yes")
 
 # Database Settings
 DATABASE_URL = get_env_or_secret("DATABASE_URL")
@@ -37,8 +42,18 @@ DATABASE_URL = get_env_or_secret("DATABASE_URL")
 LLM_BASE_URL = get_env_or_secret("LLM_BASE_URL", "http://127.0.0.1:1234/v1")
 MODEL_NAME = get_env_or_secret("MODEL_NAME", "gemma-4-e2b")
 API_KEY = get_env_or_secret("API_KEY", "lm-studio")
-TEMPERATURE = float(get_env_or_secret("TEMPERATURE", "0.3"))
-MAX_TOKENS = int(get_env_or_secret("MAX_TOKENS", "4096"))
+
+raw_temp = get_env_or_secret("TEMPERATURE", 0.3)
+try:
+    TEMPERATURE = float(raw_temp)
+except (ValueError, TypeError):
+    TEMPERATURE = 0.3
+
+raw_tokens = get_env_or_secret("MAX_TOKENS", 4096)
+try:
+    MAX_TOKENS = int(raw_tokens)
+except (ValueError, TypeError):
+    MAX_TOKENS = 4096
 
 def validate_config():
     """
