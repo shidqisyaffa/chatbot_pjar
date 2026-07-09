@@ -32,7 +32,8 @@ ALLOWED_KEYWORDS = [
     "http", "https", "rest api", "rest-api", "dns", "dhcp", "ftp", "ssh", "telnet",
     "routing", "switching", "router", "switch", "firewall", "packet", "protocol", "protokol", "osi", "tcp/ip",
     "broadcast", "multicast", "timeout", "select()", "poll()", "websocket", "wireshark",
-    "network security", "keamanan jaringan", "troubleshooting", "ip address", "mac address", "ip", "mac", "port", "wifi", "wi-fi"
+    "network security", "keamanan jaringan", "troubleshooting", "ip address", "mac address", "ip", "mac", "port", "wifi", "wi-fi",
+    "handshake", "bind", "accept", "listen", "connect", "send", "recv", "close"
 ]
 
 SUGGESTED_QUESTIONS = [
