@@ -123,7 +123,7 @@ metrics_html = f"""
     </div>
     <div class="monitoring-card">
         <div class="monitoring-title">Avg Latency</div>
-        <div class="monitoring-value" style="font-size: 1.1rem; padding-top: 5px;">{metrics["avg_response_time_ms"]} ms</div>
+        <div class="monitoring-value" style="font-size: 1.1rem; padding-top: 5px;">{metrics["avg_response_time_ms"] / 1000:.1f} s</div>
     </div>
     <div class="monitoring-card" style="grid-column: span 2;">
         <div class="monitoring-title">Logs Status (Success / Fail)</div>
